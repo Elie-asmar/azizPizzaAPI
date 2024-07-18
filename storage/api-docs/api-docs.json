@@ -1,0 +1,687 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "L5 OpenApi",
+        "description": "L5 Swagger OpenApi description",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/category/upsert": {
+            "post": {
+                "operationId": "f2311cdf79ccbe383d9e0b546a3c2747",
+                "parameters": [
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "clientcode",
+                                    "categoryname"
+                                ],
+                                "properties": {
+                                    "clientcode": {
+                                        "description": "Client Code",
+                                        "type": "string"
+                                    },
+                                    "categoryid": {
+                                        "description": "Category ID (when provided, item will be updated, otherwise created)",
+                                        "type": "string"
+                                    },
+                                    "categoryname": {
+                                        "description": "Category Name",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully Saved"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Invalid Token (Usually Occurs when token is expired, which requires re-login)"
+                    },
+                    "404": {
+                        "description": "Invalid Category ID <br/>Invalid Client"
+                    }
+                }
+            }
+        },
+        "/api/category/delete": {
+            "post": {
+                "operationId": "3a71fe833a6ebddbcde3cb98e102cbe8",
+                "parameters": [
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "clientcode",
+                                    "categoryid"
+                                ],
+                                "properties": {
+                                    "clientcode": {
+                                        "description": "Client Code",
+                                        "type": "string"
+                                    },
+                                    "categoryid": {
+                                        "description": "Category ID",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully Saved"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Invalid Token (Usually Occurs when token is expired, which requires re-login)"
+                    },
+                    "404": {
+                        "description": "Invalid Category ID <br/>Invalid Client"
+                    }
+                }
+            }
+        },
+        "/api/category/get/": {
+            "get": {
+                "summary": "Get categories",
+                "operationId": "840e2667bc1685ffca77deec7846af81",
+                "parameters": [
+                    {
+                        "name": "clientcode",
+                        "in": "query",
+                        "description": "Client Code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "categoryid",
+                        "in": "query",
+                        "description": "Category ID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response Body"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/clients/upsertClient": {
+            "post": {
+                "operationId": "55bf9f37abfabfac3fba7c10f90faac9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "description": "Client Code",
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "description": "Client Name",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Client Phone",
+                                        "type": "string"
+                                    },
+                                    "menutitle": {
+                                        "description": "Menu Title",
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "description": "Address to be displayed om Menu",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Client Email",
+                                        "type": "string"
+                                    },
+                                    "whatsapp": {
+                                        "description": "Client Whatsapp Ordering Number",
+                                        "type": "string"
+                                    },
+                                    "facebook": {
+                                        "description": "Client Facebook",
+                                        "type": "string"
+                                    },
+                                    "instagram": {
+                                        "description": "Client Facebook",
+                                        "type": "string"
+                                    },
+                                    "validtill": {
+                                        "description": "Valid Till",
+                                        "type": "string"
+                                    },
+                                    "menulogo": {
+                                        "description": "Menu logo ",
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Add/update client"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/clients/get/": {
+            "get": {
+                "summary": "Get Client Data",
+                "operationId": "ccbb2f30d3a02c2eb0136111d80a5285",
+                "parameters": [
+                    {
+                        "name": "clientcode",
+                        "in": "query",
+                        "description": "Client Code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response Body"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/clients/upsertClientUser": {
+            "post": {
+                "operationId": "adf25868edf5a07747f0195c223f0591",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "clientcode",
+                                    "usercode"
+                                ],
+                                "properties": {
+                                    "clientcode": {
+                                        "description": "Client Code",
+                                        "type": "string"
+                                    },
+                                    "usercode": {
+                                        "description": "User Code",
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "description": "User Name",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "User Password, will be encrypted and saved",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Add/update client user"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/group/upsert": {
+            "post": {
+                "operationId": "ef0b3b6cbf58ade9897d3c95dbb6d175",
+                "parameters": [
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "categoryid",
+                                    "groupname"
+                                ],
+                                "properties": {
+                                    "categoryid": {
+                                        "description": "Category ID",
+                                        "type": "string"
+                                    },
+                                    "groupid": {
+                                        "description": "Group ID (when provided, item will be updated, otherwise created)",
+                                        "type": "string"
+                                    },
+                                    "groupname": {
+                                        "description": "Group Name",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully Saved"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Invalid Token (Usually Occurs when token is expired, which requires re-login)"
+                    },
+                    "404": {
+                        "description": "Invalid Category ID <br/>Invalid Group ID"
+                    }
+                }
+            }
+        },
+        "/api/group/delete": {
+            "post": {
+                "operationId": "cc57f38b19a079e3c71173250e29eba3",
+                "parameters": [
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "groupid",
+                                    "categoryid"
+                                ],
+                                "properties": {
+                                    "groupid": {
+                                        "description": "Group ID",
+                                        "type": "string"
+                                    },
+                                    "categoryid": {
+                                        "description": "Category ID",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully Saved"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Invalid Token (Usually Occurs when token is expired, which requires re-login)"
+                    },
+                    "404": {
+                        "description": "Invalid Category ID <br/>Invalid Group"
+                    }
+                }
+            }
+        },
+        "/api/group/get/": {
+            "get": {
+                "summary": "Get Groups",
+                "operationId": "a3f104ec56ae54333fc2bb7c6d62ca2a",
+                "parameters": [
+                    {
+                        "name": "categoryid",
+                        "in": "query",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupid",
+                        "in": "query",
+                        "description": "Group ID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response Body"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/group/getbyclient/": {
+            "get": {
+                "summary": "Get Groups by client",
+                "operationId": "e8ef3ffe9c52dfe4416851d1a798c3a3",
+                "parameters": [
+                    {
+                        "name": "clientcode",
+                        "in": "query",
+                        "description": "Client Code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupid",
+                        "in": "query",
+                        "description": "Group ID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response Body"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/item/upsert": {
+            "post": {
+                "operationId": "2333afe0bef6fb381a425cdc1cd105ab",
+                "parameters": [
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "groupid",
+                                    "itemname",
+                                    "itemprice"
+                                ],
+                                "properties": {
+                                    "itemid": {
+                                        "description": "Item ID (when provided, item will be updated, otherwise created)",
+                                        "type": "string"
+                                    },
+                                    "groupid": {
+                                        "description": "Group ID",
+                                        "type": "string"
+                                    },
+                                    "itemname": {
+                                        "description": "Item Name",
+                                        "type": "string"
+                                    },
+                                    "itemdescription": {
+                                        "description": "Item Description",
+                                        "type": "string"
+                                    },
+                                    "itemprice": {
+                                        "description": "Item Price",
+                                        "type": "number",
+                                        "format": "double",
+                                        "maximum": 999999999999.99,
+                                        "minimum": 0
+                                    },
+                                    "itemimage": {
+                                        "description": "Item Image",
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully Saved"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Invalid Token (Usually Occurs when token is expired, which requires re-login)"
+                    },
+                    "404": {
+                        "description": "Invalid Group ID <br/>Invalid Item ID"
+                    }
+                }
+            }
+        },
+        "/api/item/delete": {
+            "post": {
+                "operationId": "fb6909740a0b8a88d1466433a17110d3",
+                "parameters": [
+                    {
+                        "name": "X-Custom-Header",
+                        "in": "header",
+                        "description": "Custom header for additional information",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "groupid",
+                                    "itemid"
+                                ],
+                                "properties": {
+                                    "groupid": {
+                                        "description": "Group ID",
+                                        "type": "string"
+                                    },
+                                    "itemid": {
+                                        "description": "Item ID",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully Saved"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Invalid Token (Usually Occurs when token is expired, which requires re-login)"
+                    },
+                    "404": {
+                        "description": "Invalid Group ID <br/>Invalid Item"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "summary": "Login endpoint, takes clientcode, usercode and password as credentials. Returns an encrypted token and user data. The token contains among other field, the expiry timeout. The token should returned on every API call other then login as an Authorization header ",
+                "operationId": "b27f59406108690997658bafa0376bfd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "clientcode",
+                                    "usercode"
+                                ],
+                                "properties": {
+                                    "clientcode": {
+                                        "description": "Client Code",
+                                        "type": "string"
+                                    },
+                                    "usercode": {
+                                        "description": "User Code",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Login Password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfull Login"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Invalid Login"
+                    }
+                }
+            }
+        }
+    }
+}

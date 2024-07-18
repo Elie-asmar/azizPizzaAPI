@@ -1,0 +1,68 @@
+**to create a new project
+composer create-project laravel/laravel example-app
+
+
+**to make a controller class:
+php artisan make:controller <controllerName>
+
+**to make a model class:
+php artisan make:model <modelName>
+
+
+** By default, Laravel contains a folder called migrations : example-app\database\migrations
+This folder contains definitions for database tables. The default tables are related to user and authentication.
+To run migration : php artisan migrate
+
+Note, migration uses the Schema class query builder. The default string column length is > 1000 bytes, which causes SQL errors for index columns.
+
+To set a default length for mysl varchar :
+got to -> example-app\app\Providers\AppServiceProvider.php
+set-> public function boot(): void
+    {
+        Schema::defaultStringLength(191);
+    }
+
+
+
+**Encryption:
+
+LAravel encryption users the .env APP_KEY as an encryption key. This key can be set by running php artisan key:generate
+
+
+**Scheduling:
+Check Laravel documentation to see how to define and schedule tasks within the API.
+
+To be able to run scheduled Laravel jobs, a cron file must be created, this can be done by going to
+cpanel->Advanced->cron jobs-> add cron job
+    Set the cron job to run every minute (as recommended by Laravel, since Laravel scheduler will be run and will take over scheduled jobs.)
+
+    paste the following command:
+    cd /home/codefolio/public_html/testAPI/ && php artisan schedule:run >> /dev/null 2>&1
+
+    note: >> /dev/null 2>&1 will tell the cron job scheduler to output the results to nowhere, instead of sending them by email.
+
+**To deploy Project on Cpanel
+
+Create a new directory named public_html/...subfolders.../API on your host.
+
+In my case, I always deploy that folder inside the web application folder;
+for example, public_html/ctservWebsite/API
+
+Paste the laravel project content in this folder=> after pasting, API should contain app, bootstrap,config .. etc folders.
+
+Inside the API folder is a public directory.
+Copy the content of that public directory into the public_html/...subfolders.../API directory.
+
+Edit the public_html/API directory/index.php file like this:
+
+Change require
+__ DIR__.'/../vendor/autoload.php';
+to require
+__ DIR__.'/vendor/autoload.php';
+Change
+require_once __ DIR__.'/../bootstrap/app.php';
+to
+require_once __ DIR__.'/bootstrap/app.php';
+
+
+call any API route: https://ctserv.net/testSuppApp/API/api/basic --here basic is one of the defined routes

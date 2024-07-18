@@ -1,0 +1,20 @@
+[
+    {
+        "CATEGORYID": 11,
+        "CATEGORYNAME": "FOOD",
+        "ACATEGORYNAME": null,
+        "PIC": null
+    },
+    {
+        "CATEGORYID": 12,
+        "CATEGORYNAME": "BEVERAGES",
+        "ACATEGORYNAME": null,
+        "PIC": null
+    },
+    {
+        "CATEGORYID": 13,
+        "CATEGORYNAME": "TOBACCO",
+        "ACATEGORYNAME": null,
+        "PIC": null
+    }
+]
