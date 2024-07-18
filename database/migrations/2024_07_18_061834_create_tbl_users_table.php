@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('tbl_users');
         Schema::create('tbl_users', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->engine = 'InnoDB';
+            $table->string('user_id', 25)->primary();
+            $table->string('user_name', 100);
+            $table->string('user_password,100');
         });
     }
 
