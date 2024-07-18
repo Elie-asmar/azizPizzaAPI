@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('menuItem_desc', 100);
             $table->string('menuItem_ingredient', 200);
             $table->string('menuItem_size', 25);
+            $table->string('menuItem_category', 100);
             $table->string('menuItem_price', 25);
             $table->string('menuItem_img', 200);
         });

@@ -33,7 +33,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [login::class, 'login']);
 
-
+Route::post('item/upsert', [items::class, 'upsert']);
+Route::post('item/delete', [items::class, 'delete']);
+Route::get('item/get', [items::class, 'get']);
 
 // Route::post('/category/upsert', [category::class, 'upsert'])->middleware(Authentication::class);
 // Route::post('/category/swap', [category::class, 'swap'])->middleware(Authentication::class);

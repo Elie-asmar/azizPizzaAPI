@@ -9,9 +9,9 @@ class tbl_menuitems extends Model
 {
     use HasFactory;
     //Specify the table that is linked to this model
-    protected $table = 'tbl_users';
+    protected $table = 'tbl_menuitems';
     //specify the PK
-    protected $primaryKey = 'user_id';
+    protected $primaryKey = 'menuItem_id';
     //If your model's primary key is not an integer, you should define a protected $keyType property on your model. This property should have a value of string
     protected $keyType = 'string';
     // Indicates if the model's ID is auto-incrementing.

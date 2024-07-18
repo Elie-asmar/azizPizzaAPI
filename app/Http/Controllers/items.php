@@ -6,6 +6,7 @@ use App\Models\tbl_categories;
 use App\Models\tbl_clients;
 use App\Models\tbl_groups;
 use App\Models\tbl_items;
+use App\Models\tbl_menuitems;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,69 +15,11 @@ use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Encoders\AutoEncoder;
 use Throwable;
 use Intervention\Image\ImageManager;
+use stdClass;
 
 class items extends Controller
 {
-    /**
-     * @OA\Post(
-     *     path="/api/item/upsert",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 required={"groupid","itemname","itemprice"},
-     *                 @OA\Property(
-     *                     property="itemid",
-     *                     description="Item ID (when provided, item will be updated, otherwise created)",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="groupid",
-     *                     description="Group ID",
-     *                     type="string"
-     *                 ),
-     *                  @OA\Property(
-     *                     property="itemname",
-     *                     description="Item Name",
-     *                     type="string"
-     *                 ),
-     *                  @OA\Property(
-     *                     property="itemdescription",
-     *                     description="Item Description",
-     *                     type="string"
-     *                 ),
-     *                  @OA\Property(
-     *                     property="itemprice",
-     *                     description="Item Price",
-     *                     type="number",
-     *                     format="double",
-     *                     minimum=0,
-     *                     maximum=999999999999.99
-     *                 ),
-     *                  @OA\Property(
-     *                     property="itemimage",
-     *                     description="Item Image",
-     *                     type="object",
-     *                 ),
-     *
-     *             ),
-     *         ),
-     *     ),
-     *     @OA\Response(response="200", description="Successfully Saved"),
-     *     @OA\Response(response="400", description="Bad Request"),
-     *     @OA\Response(response="401", description="Invalid Token (Usually Occurs when token is expired, which requires re-login)"),
-     *     @OA\Response(response="404", description="Invalid Group ID <br/>Invalid Item ID"),
-     *     @OA\Parameter(
-     *         name="X-Custom-Header",
-     *         in="header",
-     *         description="Custom header for additional information",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     * )
-     */
+
     function upsert(Request $req)
     {
         try {
@@ -89,38 +32,23 @@ class items extends Controller
             $data = null;
             $now = new DateTime();
 
-            $grp = tbl_groups::where('grp_id', $req->groupid)->first();
-            $cat = tbl_categories::where('cat_id', $grp->grp_catid)->first();
-
-
-            if (!$grp) {
-                return response('Invalid Group ID', 404);
-            }
-
 
             if ($req->itemid) {
-                $data = tbl_items::where('itm_id', $req->itemid)->first();
+                $data = tbl_menuitems::where('menuItem_id', $req->itemid)->first();
                 if (!$data) {
                     return response('Invalid Item ID', 404);
                 }
             } else {
-                $data = new tbl_items();
-                $order = tbl_items::where('itm_grpid', '=', $req->groupid)->max('itm_order');
-                $order = $order ?? 0;
-                $data->itm_order = $order + 1;
-                $data->itm_grpid = $req->groupid;
+                $data = new tbl_menuitems();
+                $data->menuItem_id = $this->generateRandomId();
             }
-            $data->itm_name = $req->itemname;
-            $data->itm_description = $req->itemdescription;
-            $data->itm_price = $req->itemprice;
+            $data->menuItem_name = $req->name;
+            $data->menuItem_desc = $req->description;
+            $data->menuItem_ingredient = $req->ingredients;
+            $data->menuItem_size = $req->size;
+            $data->menuItem_price = $req->price;
+            $data->menuItem_category = $req->category;
 
-            if ($req->itemstatus && $req->itemid) {
-                $data->itm_status = $req->itemstatus;
-            } else if (!$req->itemid) {
-                $data->itm_status = 'A';
-            }
-
-            $data->itm_timestamp = $now->format('Y-m-d H:i:s');
             $data->save();
 
 
@@ -139,7 +67,7 @@ class items extends Controller
                 // $encoded = $image->encode(new AutoEncoder(quality: 1)); // Intervention\Image\EncodedImage
                 $encoded = $image->toJpeg($size > 100 ? 10 : 80);
 
-                $itemPath = '/' . $cat->cat_client .  '/images/menuItems/item' . strval($data->itm_id) . '/';
+                $itemPath = '/' . $data->menuItem_id .  '/images/menuItems/item' . strval($data->menuItem_id) . '/';
 
                 $files = Storage::disk('public')->files($itemPath);
                 Storage::disk('public')->delete($files);
@@ -147,12 +75,12 @@ class items extends Controller
                 // $imageDiskPath = $itemPath . $imgObj->filename . '.' . $img[0];
                 $imageDiskPath = $itemPath . $imgObj->filename . '.jpg';
                 Storage::disk('public')->put($imageDiskPath, $encoded);
-                $data->itm_photo = $imageDiskPath;
+                $data->menuItem_img = $imageDiskPath;
             } else {
-                $itemPath = '/' . $cat->cat_client .  '/images/menuItems/item' . strval($data->itm_id) . '/';
+                $itemPath = '/' . $data->menuItem_id .  '/images/menuItems/item' . strval($data->menuItem_id) . '/';
                 $files = Storage::disk('public')->files($itemPath);
                 Storage::disk('public')->delete($files);
-                $data->itm_photo = null;
+                $data->menuItem_img = null;
             }
 
             $data->save();
@@ -167,93 +95,39 @@ class items extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/item/swap",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 required={"groupid","itemID1","itemID2"},
-     *
-     *                 @OA\Property(
-     *                     property="groupid",
-     *                     description="Group ID",
-     *                     type="string"
-     *                 ),
-     *                  @OA\Property(
-     *                     property="itemID1",
-     *                     description="Item ID1 to swap",
-     *                     type="string"
-     *                 ),
-     *                  @OA\Property(
-     *                     property="itemID2",
-     *                     description="Item ID2 to swap",
-     *                     type="string"
-     *                 ),
-     *             ),
-     *         ),
-     *     ),
-     *     @OA\Response(response="200", description="Successfully Saved"),
-     *     @OA\Response(response="400", description="Bad Request"),
-     *     @OA\Response(response="401", description="Invalid Token (Usually Occurs when token is expired, which requires re-login)"),
-     *     @OA\Response(response="404", description="Invalid Group ID <br/>Invalid Item ID"),
-     *     @OA\Parameter(
-     *         name="X-Custom-Header",
-     *         in="header",
-     *         description="Custom header for additional information",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     * )
-     */
-    function swap(Request $req)
+
+    function get(Request $req)
     {
         try {
 
-            $valid = Validator::make($req->all(), ["groupid" => ['required'], "itemID1" => ['required', "itemID2" => ['required']]], $this->globalMessages());
-            if ($valid->fails()) {
-                // dd($valid);
-                return response($valid->messages()->first(), 400);
-            }
-            $data = null;
-            $now = new DateTime();
-
-            $grp = tbl_groups::where('grp_id', $req->groupid)->first();
-            $cat = tbl_categories::where('cat_id', $grp->grp_catid)->first();
+            $itemId = $req->ID;
 
 
-            if (!$grp) {
-                return response('Invalid Group ID', 404);
+            $data = tbl_menuitems::select('*');
+            if ($itemId) {
+                $data = $data->where('menuItem_id', $itemId);
             }
 
-            $data = tbl_items::where('itm_id', $req->itemID1)->first();
-            if (!$data) {
-                return response('Invalid Item ID', 404);
-            }
-            $data1 = tbl_items::where('itm_id', $req->itemID2)->first();
-            if (!$data1) {
-                return response('Invalid Item ID', 404);
-            }
-            $ord = $data1->itm_order;
-            $data1->itm_order = $data->itm_order;
-            $data->itm_order = $ord;
+            $data = $data->get();
 
-            $data->itm_timestamp = $now->format('Y-m-d H:i:s');
-            $data1->itm_timestamp = $now->format('Y-m-d H:i:s');
+            $coll = collect($data);
 
+            $data = $coll->map(function (string $val) {
+                $obj = json_decode($val);
+                $obj1 = new stdClass();
+                $obj1->ID = $obj->menuItem_id;
+                $obj1->Name = $obj->menuItem_name;
+                $obj1->description = $obj->menuItem_desc;
+                $obj1->ingredients = $obj->menuItem_ingredient;
+                $obj1->size = $obj->menuItem_size;
+                $obj1->price = $obj->menuItem_price;
+                $obj1->category = $obj->menuItem_category;
+                $obj1->image = $obj->menuItem_img;
 
-            $data->save();
-            $data1->save();
+                return $obj1;
+            });
 
-
-
-            return response('Saved Successfully', 200);
-
-            // return $data == null ? new stdClass() : $data;
-            // return response()->json('ok', 200);
+            return $data;
         } catch (Throwable  | Exception $ex) {
             return response('An error has occured.' . $ex->getMessage(), 400);
         }
@@ -302,26 +176,9 @@ class items extends Controller
         try {
             $rules = [...$this->insertrules()];
             $rules['itemid'] = ['required', 'integer', 'gt:0'];
-            unset($rules['itemname']);
-            unset($rules['itemprice']);
+            unset($rules['name']);
 
-            $valid = Validator::make($req->all(), $rules, $this->globalMessages());
-            if ($valid->fails()) {
-                return response($valid->messages()->first(), 400);
-            }
-            $data = null;
-            $now = new DateTime();
-
-            $grp = tbl_groups::where('grp_id', $req->groupid)->first();
-            if (!$grp) {
-                return response('Invalid Group ID', 404);
-            }
-
-            $itm = tbl_items::where('itm_id', $req->itemid)->first();
-            if (!$itm) {
-                return response('Invalid Item ID', 404);
-            }
-
+            $itm = tbl_menuitems::where('menuItem_id', $req->itemid)->first();
             $itm->delete();
 
             return response('Saved Successfully', 200);
@@ -336,11 +193,13 @@ class items extends Controller
     private function insertrules()
     {
         return [
-            'groupid' => ['required', 'integer', 'gt:0'],
-            'itemid' => ['nullable', 'integer', 'gt:0'],
-            'itemname' => ['required', 'max:200'],
-            'itemdescription' => ['max:2000'],
-            'itemprice' => ['required', 'decimal:0,2', 'gt:0'],
+
+            'name' => ['required', 'max:100'],
+            'description' => ['max:100'],
+            'ingredients' => ['max:200'],
+            'category' => ['max:100'],
+            'size' => ['max:25'],
+            'price' => ['max:25'],
         ];
     }
     private function globalMessages()
@@ -360,5 +219,18 @@ class items extends Controller
         list(, $type) = explode('/', $type);
         list(, $data) = explode(',', $data);
         return [$type, $data];
+    }
+
+    private function generateRandomId($length = 25)
+    {
+        // Ensure the length is even to match the number of bytes
+        $bytesLength = ceil($length / 2);
+
+        // Generate random bytes and convert to hexadecimal
+        $randomBytes = random_bytes($bytesLength);
+        $randomId = bin2hex($randomBytes);
+
+        // Trim the ID to the desired length if necessary
+        return substr($randomId, 0, $length);
     }
 }
